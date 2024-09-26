@@ -53,14 +53,16 @@ def display_heatmaps(data):
         # Create pivot table for heatmap
         heatmap_data_time = interval_data.pivot(index='day', columns='time_slot', values='num_bets').fillna(0)
         
-        # Plotting the heatmap
-        fig, ax = plt.subplots(figsize=(12, 6))
-        sns.heatmap(heatmap_data_time, cmap='YlGnBu', annot=True, fmt=".1f", ax=ax)
+        # Plotting the heatmap with larger font size and rounded values
+        fig, ax = plt.subplots(figsize=(14, 8))  # Adjust the figure size for more space
+        sns.heatmap(heatmap_data_time, cmap='YlGnBu', annot=True, fmt=".1f", ax=ax, 
+                    annot_kws={"size": 10},  # Increase font size for annotation
+                    cbar_kws={'label': 'Number of Bets'})  # Colorbar label
         plt.title('Number of Bets by 30-Minute Intervals')
         plt.xlabel('Time Slot (30 min intervals)')
         plt.ylabel('Day of the Week')
-        plt.xticks(rotation=45)
-        plt.yticks(rotation=0)
+        plt.xticks(rotation=45, ha='right', fontsize=10)  # Rotate and adjust font size for x-axis labels
+        plt.yticks(rotation=0, fontsize=10)  # Adjust font size for y-axis labels
         st.pyplot(fig)
     except Exception as e:
         st.error(f"Error in 30-minute interval heatmap: {e}")

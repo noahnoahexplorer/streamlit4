@@ -35,20 +35,24 @@ def display_heatmaps(data):
     try:
         # 30-minute Interval Heatmap Based on 'created_at'
         st.write("### 30-Minute Interval Heatmap Based on Created At")
-        data['created_at'] = pd.to_datetime(data['created_at'], errors='coerce')  # Convert to datetime and handle errors
-        data['30min_interval'] = data['created_at'].dt.floor('30T')
+        
+        # Convert 'created_at' to datetime with the correct format
+        data['created_at'] = pd.to_datetime(data['created_at'], format='%d/%m/%Y %H:%M', errors='coerce')
         
         # Remove rows with invalid 'created_at' (NaT values)
-        interval_data = data.dropna(subset=['30min_interval'])
-
+        data.dropna(subset=['created_at'], inplace=True)
+        
+        # Create a new column for 30-minute intervals
+        data['30min_interval'] = data['created_at'].dt.floor('30T')
+        
         # Aggregate data for the heatmap
-        interval_data = interval_data.groupby('30min_interval').size().reset_index(name='num_bets')
+        interval_data = data.groupby(['30min_interval']).size().reset_index(name='num_bets')
         interval_data['day'] = interval_data['30min_interval'].dt.day_name()
         interval_data['time_slot'] = interval_data['30min_interval'].dt.strftime('%H:%M')
         
         # Create pivot table for heatmap
-        heatmap_data_time = interval_data.pivot('day', 'time_slot', 'num_bets').fillna(0)
-
+        heatmap_data_time = interval_data.pivot(index='day', columns='time_slot', values='num_bets').fillna(0)
+        
         # Plotting the heatmap
         fig, ax = plt.subplots(figsize=(12, 6))
         sns.heatmap(heatmap_data_time, cmap='YlGnBu', annot=True, fmt=".1f", ax=ax)

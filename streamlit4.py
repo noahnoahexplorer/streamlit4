@@ -55,7 +55,7 @@ def display_heatmaps(data):
         
         # Plotting the heatmap with larger font size and rounded values
         fig, ax = plt.subplots(figsize=(14, 8))  # Adjust the figure size for more space
-        sns.heatmap(heatmap_data_time, cmap='YlGnBu', annot=True, fmt=".1f", ax=ax, 
+        sns.heatmap(heatmap_data_time, cmap='YlGnBu', annot=True, fmt=".0f", ax=ax, 
                     annot_kws={"size": 10},  # Increase font size for annotation
                     cbar_kws={'label': 'Number of Bets'})  # Colorbar label
         plt.title('Number of Bets by 30-Minute Intervals')
